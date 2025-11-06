@@ -1,15 +1,55 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { loginStyles } from "../assets/dummyStyles";
-import { useLocation, useNavigate } from "react-router-dom";
-import { FaArrowLeft } from "react-icons/fa";
+import { useLocation, useNavigate, Link } from "react-router-dom"; 
+import {
+  FaArrowLeft,
+  FaEye,
+  FaEyeSlash,
+  FaUnlock,
+  FaUser,
+} from "react-icons/fa";
+import logo from "../assets/logo.png";
+import { toast, ToastContainer } from "react-toastify";
 
 const Login = () => {
   const navigate = useNavigate();
-  const location = useLocation;
+  const location = useLocation();
 
   const [credentials, setCredentials] = useState({ email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
   const [isActive, setIsActive] = useState(false);
+
+  useEffect(() => {
+    setIsActive(true);
+  }, []);
+
+  const handleChange = (e) => {
+    setCredentials((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("Login Details", credentials);
+    localStorage.setItem("authToken", "your-authentication-token-here");
+
+    toast.success("Login Successful! Welcome back", {
+      position: "top-right",
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      theme: "colored",
+      onClose: () => {
+        const redirectPath =  "/";
+        navigate(redirectPath, { replace: true });
+      },
+    });
+  };
+
+  const togglePasswordVisibility = () => setShowPassword((prev) => !prev); 
   return (
     <div className={loginStyles.pageContainer}>
       <div className={loginStyles.animatedBackground.base}>
@@ -29,23 +69,112 @@ const Login = () => {
           }`}
         />
       </div>
-      <a href="/" className={loginStyles.backButton}>
+      <Link to="/" className={loginStyles.backButton}>
+  
         <FaArrowLeft className="text-sm sm:text-base" />
         <span className="font-medium text-xs sm:text-sm">Back to Home</span>
-      </a>
+      </Link>
 
       <div
         className={`${loginStyles.loginCard.container} ${
           isActive ? "scale-100 opacity-100" : "scale-90 opacity-0"
         }`}
       >
-        coming soo
         <div className={loginStyles.loginCard.card}>
           <div className={loginStyles.loginCard.decor1} />
           <div className={loginStyles.loginCard.decor2} />
+
+          <div className={loginStyles.loginCard.headerContainer}>
+            <div className={loginStyles.loginCard.logoContainer}>
+              <div className={loginStyles.loginCard.logoText}>
+                <img
+                  src={logo}
+                  alt="logo"
+                  className="h-[1em] w-auto block"
+                  style={{
+                    display: "block",
+                    objectFit: "cover",
+                  }}
+                />
+                <span className="font-bold tracking-wider">Imbesu</span>
+              </div>
+            </div>
+            <h1 className={loginStyles.loginCard.title}>PremiumDrive</h1>
+            <p className={loginStyles.loginCard.subtitle}>
+              Luxury Mobility Experience
+            </p>
+          </div>
+          <form onSubmit={handleSubmit} className={loginStyles.form.container}>
+            <div className={loginStyles.form.inputContainer}>
+              <div className={loginStyles.form.inputWrapper}>
+                <div className={loginStyles.form.inputIcon}>
+                  <FaUser />
+                </div>
+                <input
+                  type="email"
+                  name="email"
+                  onChange={handleChange}
+                  value={credentials.email}
+                  placeholder="Enter your email"
+                  required
+                  className={loginStyles.form.input}
+                />
+              </div>
+            </div>
+            <div className={loginStyles.form.inputContainer}>
+              <div className={loginStyles.form.inputWrapper}>
+                <div className={loginStyles.form.inputIcon}>
+                  <FaUnlock />
+                </div>
+                <input
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  onChange={handleChange}
+                  value={credentials.password}
+                  placeholder="Enter your password"
+                  required
+                  className={loginStyles.form.input}
+                />
+                <div
+                  onClick={togglePasswordVisibility} // Fixed function name
+                  className={loginStyles.form.passwordToggle}
+                >
+                  {showPassword ? <FaEyeSlash /> : <FaEye />}
+                </div>
+              </div>
+            </div>
+            <button type="submit" className={loginStyles.form.submitButton}>
+              <span className={loginStyles.form.buttonText}>LogIn</span>
+              <div className={loginStyles.form.buttonHover} />
+            </button>
+          </form>
+          <div className={loginStyles.signupSection}>
+            <p className={loginStyles.signupText}>Don't Have an account</p>
+            <Link to="/signup" className={loginStyles.signupButton}>
+              {" "}
+              {/* Changed to Link */}
+              Create Account
+            </Link>
+          </div>
         </div>
       </div>
-      <div></div>
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+        toastStyle={{
+          backgroundColor: "#fb923c",
+          borderRadius: "12px",
+          boxShadow: "0 4px 20px rgba(249, 115, 22, 0.25)",
+        }}
+      />
     </div>
   );
 };

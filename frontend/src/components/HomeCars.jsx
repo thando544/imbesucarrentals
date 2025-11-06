@@ -71,7 +71,7 @@ function HomeCars() {
             >
               <div className={styles.borderOverlay} />
               <div className={styles.priceBadge}>
-                <span className={styles.priceText}>{car.price}/day</span>
+                <span className={styles.priceText}>${car.price}/day</span>
               </div>
               <div className={styles.imageContainer}>
                 <img
@@ -124,14 +124,16 @@ function HomeCars() {
                 <button
                   onClick={() =>
                     navigate(`/cars/${car.id}`, { state: { car } })
-                  } className={styles.bookButton}
+                  }
+                  className={styles.bookButton}
                 >
-                  <span className={styles.buttonText}>Book Now
+                  <span className={styles.buttonText}>
+                    Book Now
                     <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
                   </span>
                 </button>
               </div>
-              <div  className={styles.accentBlur}/>
+              <div className={styles.accentBlur} />
             </div>
           );
         })}

@@ -93,24 +93,27 @@ const Footer = () => {
             <ul className={styles.contactList}>
               <li className={styles.contactItem}>
                 <FaMapMarkedAlt className={styles.contactIcon} />
-                <span>9002 Mkhosana Victoria Falls Zimbabwe</span>
+                <span>
+                  Office 8B Ramjis complex corner 11th Avenue and Robert
+                  Mugabe way ,Bulawayo
+                </span>
               </li>
               <li className={styles.contactItem}>
                 <FaPhone className={styles.contactIcon} />
-                <span>+263 78 032 8658</span>
+                <span>+263771447759</span>
               </li>
               <li className={styles.contactItem}>
                 <FaEnvelope className={styles.contactIcon} />
-                <span>mpofu7085@gmail.com</span>
+                <span>wendy@imbesucarrental.co.zw</span>
               </li>
             </ul>
             <div className={styles.hoursContainer}>
               <h4 className={styles.hoursTitle}>Business Hours</h4>
 
               <div className={styles.hoursText}>
-                <p>Monday - Friday: 8:00 AM - 8:00 PM</p>
-                <p>Saturday: 9:00 AM - 6:00 PM</p>
-                <p>Sunday: 10:00 AM - 4:00 PM</p>
+                <p>Monday - Friday: 8:00 AM - 5:00 PM</p>
+                <p>Saturday: 8:00 AM - 1:00 PM</p>
+                <p>Sunday: Closed</p>
               </div>
             </div>
           </div>
@@ -142,7 +145,15 @@ const Footer = () => {
             reserved
           </p>
           <p className="mt-3 md:mt-0">
-            Developed By <a href="https://wa.me/263780328658" target="_blank" rel="noopener noreffer" className={styles.designerLink}>Thando Mpofu</a>
+            Developed By{" "}
+            <a
+              href="https://wa.me/263780328658"
+              target="_blank"
+              rel="noopener noreffer"
+              className={styles.designerLink}
+            >
+              Thando Mpofu
+            </a>
           </p>
         </div>
       </div>

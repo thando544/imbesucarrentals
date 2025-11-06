@@ -1,5 +1,5 @@
 import React, { useCallback, useRef, useState, useEffect } from "react";
-import { Link, replace, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom"; // Removed unused 'replace'
 import logo from "../assets/logo.png";
 import { navbarStyles as styles } from "../assets/dummyStyles";
 import {
@@ -12,20 +12,37 @@ import {
 
 function Navbar() {
   const [scrolled, setScrolled] = useState(false);
-  const [IsOpen, setIsOpen] = useState(false);
-  const [isLoggedIn] = useState(() => !!localStorage.getItem("auth"));
+  const [isOpen, setIsOpen] = useState(false); // Standardized to lowercase 'isOpen'
+  const [isLoggedIn, setIsLoggedIn] = useState(
+    () => !!localStorage.getItem("authToken")
+  ); // Added setIsLoggedIn
   const location = useLocation();
   const navigate = useNavigate();
+
+  const buttonRef = useRef(null);
+  const menuRef = useRef(null);
   const navLinks = [
     { to: "/", label: "Home" },
     { to: "/cars", label: "Cars" },
     { to: "/contact", label: "Contact" },
   ];
 
-  // useEffect(() => {
-  //   isLoggedIn(!!localStorage.getItem("authToken"));
-  //   setIsOpen(false);
-  // }, [location]);
+  const handleLogout = useCallback(() => {
+    localStorage.removeItem("authToken");
+    setIsLoggedIn(false); // Fixed: Use setIsLoggedIn
+    navigate("/", { replace: true });
+    setIsOpen(false);
+  }, [navigate, setIsLoggedIn]); // Added setIsLoggedIn to dependencies
+
+  const isActive = (path) => {
+    if (path === "/") return location.pathname === "/";
+    return location.pathname.startsWith(path);
+  };
+
+  useEffect(() => {
+    setIsLoggedIn(!!localStorage.getItem("authToken")); // Fixed: Use setIsLoggedIn
+    setIsOpen(false);
+  }, [location, setIsLoggedIn]); // Added setIsLoggedIn
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 10);
@@ -35,17 +52,16 @@ function Navbar() {
 
   useEffect(() => {
     const handleStorageChange = () => {
-      setIsLoggedIn(!!localStorage.getItem("authToken"));
+      setIsLoggedIn(!!localStorage.getItem("authToken")); // Fixed: Use setIsLoggedIn
     };
-
     window.addEventListener("storage", handleStorageChange);
     return () => window.removeEventListener("storage", handleStorageChange);
-  }, []);
+  }, [setIsLoggedIn]); // Added setIsLoggedIn
 
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
-        IsOpen &&
+        isOpen && // Standardized to lowercase
         menuRef.current &&
         buttonRef.current &&
         !menuRef.current.contains(event.target) &&
@@ -56,15 +72,15 @@ function Navbar() {
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [IsOpen]);
+  }, [isOpen]);
 
   useEffect(() => {
     const handleKey = (e) => {
-      if (e.key === "Escape" && IsOpen) setIsOpen(false);
+      if (e.key === "Escape" && isOpen) setIsOpen(false);
     };
     window.addEventListener("keydown", handleKey);
     return () => window.removeEventListener("keydown", handleKey);
-  }, [IsOpen]);
+  }, [isOpen]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -73,19 +89,6 @@ function Navbar() {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
-
-  const buttonRef = useRef(null);
-  const menuRef = useRef(null);
-  const handleLogout = useCallback(() => {
-    localStorage.removeItem("authToken");
-    isLoggedIn(false);
-    navigate("/", { replace: true });
-    setIsOpen(false);
-  }, [navigate]);
-  const isActive = (path) => {
-    if (path === "/") return location.pathname === "/";
-    return location.pathname.startsWith(path);
-  };
 
   return (
     <nav
@@ -112,9 +115,9 @@ function Navbar() {
                     src={logo}
                     alt="logo"
                     className="h-[1em] w-auto block"
-                    style={{ display: "block", objectFit: "contain" }}
+                    style={{ display: "block", objectFit: "cover" }}
                   />
-                  <span className={styles.logoText}>Imbesu</span>
+                  <span className={styles.logoText}>IMBESU</span>
                 </div>
               </Link>
 
@@ -147,7 +150,7 @@ function Navbar() {
                     className={styles.authButton}
                     aria-label="logout"
                   >
-                    <FaSignInAlt className="text-base" />
+                    <FaSignOutAlt className="text-base" />
                     <span className={styles.authText}>LogOut</span>
                   </button>
                 ) : (
@@ -156,7 +159,7 @@ function Navbar() {
                     className={styles.authButton}
                     aria-label="login"
                   >
-                    <FaUser className={styles.authText} />
+                    <FaUser />
                     <span className={styles.authText}>Login</span>
                   </Link>
                 )}
@@ -165,12 +168,12 @@ function Navbar() {
                 <button
                   ref={buttonRef}
                   onClick={() => setIsOpen((p) => !p)}
-                  aria-label={IsOpen ? "Close menu" : "Open menu"}
-                  aria-expanded={IsOpen}
+                  aria-label={isOpen ? "Close menu" : "Open menu"}
+                  aria-expanded={isOpen}
                   aria-controls="mobile-menu"
                   className={styles.mobileAuthButton}
                 >
-                  {IsOpen ? (
+                  {isOpen ? (
                     <FaTimes className="h-5 w-5" />
                   ) : (
                     <FaBars className="h-5 w-5" />
@@ -184,9 +187,9 @@ function Navbar() {
       <div
         id="mobile-menu"
         ref={menuRef}
-        aria-hidden={!IsOpen}
+        aria-hidden={!isOpen}
         className={`${styles.mobileMenu.container} ${
-          IsOpen ? styles.mobileMenu.open : styles.mobileMenu.closed
+          isOpen ? styles.mobileMenu.open : styles.mobileMenu.closed
         }`}
       >
         <div className={styles.mobileMenuInner}>
@@ -224,6 +227,7 @@ function Navbar() {
                   onClick={() => setIsOpen(false)}
                 >
                   <FaUser className="mr-3 text-base" />
+                  Login
                 </Link>
               )}
             </div>

@@ -71,7 +71,6 @@ export default function HeroSleek() {
           <div className={styles.gradientOverlay} />
         </div>
 
-        {/* SVG sweeps */}
         <svg
           className={styles.svgContainer}
           viewBox="0 0 1590 900"
